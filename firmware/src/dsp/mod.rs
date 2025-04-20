@@ -1,6 +1,7 @@
 pub mod filter;
 pub mod phasor;
 pub mod debounce;
+pub mod resonator;
 
 pub use phasor::Phasor;
 

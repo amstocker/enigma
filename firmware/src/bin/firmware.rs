@@ -11,6 +11,11 @@ mod app {
     use rtic_sync::signal::{Signal, SignalReader, SignalWriter};
     
     use enigma_firmware::system::*;
+    use enigma_firmware::dsp::resonator::Bank;
+
+
+    const INPUT_SAMPLE_RATE: u32 = 1000; // Hz
+
 
     #[shared]
     struct Shared {}
@@ -20,7 +25,8 @@ mod app {
         audio_interface: AudioInterface,
         input: Input,
         input_writer: SignalWriter<'static, InputSample>,
-        input_reader: SignalReader<'static, InputSample>
+        input_reader: SignalReader<'static, InputSample>,
+        resonator_bank: Bank<10>
     }
 
     #[init]
@@ -37,10 +43,11 @@ mod app {
             audio_interface,
             input,
             input_writer,
-            input_reader
+            input_reader,
+            resonator_bank: Bank::new(1e-4, 1e-1, 2.0, 0.5)
         };
 
-        input::spawn(100.Hz()).unwrap();
+        input::spawn(INPUT_SAMPLE_RATE.Hz()).unwrap();
 
         defmt::trace!("Finished init");
         (Shared {}, local)
@@ -52,13 +59,15 @@ mod app {
         priority = 3,
         local = [
             audio_interface,
-            input_reader
+            input_reader,
+            resonator_bank
         ]
     )]
     fn dsp(cx: dsp::Context) {
         let dsp::LocalResources {
             audio_interface,
             input_reader,
+            resonator_bank,
             ..
         } = cx.local;
 
@@ -68,8 +77,9 @@ mod app {
             }
         }).unwrap();
 
-        if let Some(InputSample { cv1, cv2, cv3, cv4 }) = input_reader.try_read() {
-            //
+        if let Some(input_sample) = input_reader.try_read() {
+            let detected = resonator_bank.process(input_sample.cv1);
+            defmt::debug!("input={}, detected={}, freq={}", input_sample.cv1, detected, detected.phase_diff * INPUT_SAMPLE_RATE as f32);
         }
     }
 
