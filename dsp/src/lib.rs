@@ -1,14 +1,38 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+#![no_std]
+
+pub mod filter;
+pub mod phasor;
+pub mod resonator;
+
+pub use phasor::Phasor;
+
+
+pub trait Process {
+    fn process(&mut self, input: f32) -> f32;
 }
+
+#[derive(Clone, Copy)]
+pub struct Chain<A, B> {
+    pub first: A,
+    pub then: B
+}
+
+impl<A: Process, B: Process> Process for Chain<A, B> {
+    fn process(&mut self, input: f32) -> f32 {
+        self.then.process(self.first.process(input))
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    extern crate std;
+
+    use dsp_test::Module;
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn test_std() {
+        std::println!("hello");
     }
+
 }

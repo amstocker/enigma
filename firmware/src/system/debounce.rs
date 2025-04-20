@@ -1,5 +1,3 @@
-use super::Process;
-
 
 #[derive(Clone, Copy, defmt::Format)]
 struct Item {
@@ -24,7 +22,7 @@ impl<const N: usize> Median<N> {
         }
     }
 
-    pub fn insert(&mut self, value: f32) {
+    pub fn insert(&mut self, value: f32) -> f32 {
         let mut index_to_pop = 0;
         for (i, Item { age, .. }) in self.queue.iter_mut().enumerate() {
             *age += 1;
@@ -33,10 +31,12 @@ impl<const N: usize> Median<N> {
             }
         }
         self.queue[index_to_pop] = Item { value, age: 0 };
+        
         self.sort();
+        self.queue[N >> 2].value
     }
 
-    pub fn sort(&mut self) {
+    fn sort(&mut self) {
         for i in 1..N {
             let mut j = i;
             while (j > 0) && (self.queue[j].value < self.queue[j - 1].value) {
@@ -44,12 +44,5 @@ impl<const N: usize> Median<N> {
                 j -= 1;
             }
         }
-    }
-}
-
-impl<const N: usize> Process for Median<N> {
-    fn process(&mut self, input: f32) -> f32 {
-        self.insert(input);
-        self.queue[N >> 2].value
     }
 }

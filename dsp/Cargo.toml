@@ -1,9 +1,11 @@
 [package]
-name = "dsp"
+name = "enigma-dsp"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+micromath = "2.1.0"
+num-complex = "0.4.6"
 
 
 [dev-dependencies]

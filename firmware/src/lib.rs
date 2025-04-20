@@ -1,16 +1,15 @@
 #![no_main]
 #![no_std]
 
+pub mod consts;
+pub mod system;
+
 use core::sync::atomic::{AtomicUsize, Ordering};
 use defmt_rtt as _; // global logger
 
 use panic_probe as _;
 
 use stm32h7xx_hal as _; // memory layout
-
-pub mod consts;
-pub mod system;
-pub mod dsp;
 
 
 // same panicking *behavior* as `panic-probe` but doesn't print a panic message

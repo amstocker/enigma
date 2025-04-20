@@ -1,3 +1,4 @@
+#[allow(unused)]
 use micromath::F32Ext;
 use core::f32::consts::PI;
 

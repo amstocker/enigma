@@ -11,7 +11,7 @@ mod app {
     use rtic_sync::signal::{Signal, SignalReader, SignalWriter};
     
     use enigma_firmware::system::*;
-    use enigma_firmware::dsp::resonator::Bank;
+    use enigma_dsp::resonator::Bank;
 
 
     const INPUT_SAMPLE_RATE: u32 = 1000; // Hz

@@ -1,4 +1,5 @@
 pub mod cv;
+pub mod debounce;
 
 use stm32h7xx_hal::delay::DelayFromCountDownTimer;
 use stm32h7xx_hal::prelude::*;

@@ -1,5 +1,7 @@
 use core::f32::consts::PI;
 use num_complex::Complex32;
+
+#[allow(unused)]
 use micromath::F32Ext;
 
 
@@ -58,7 +60,7 @@ impl Resonator {
 }
 
 
-#[derive(Default, defmt::Format)]
+#[derive(Default)]
 pub struct Detected {
     pub phase: f32,
     pub phase_diff: f32,
@@ -102,7 +104,6 @@ impl<const N: usize> Bank<N> {
         for i in 0..N {
             mag[i] = self.resonators[i].polar_value.norm_sq;
         }
-        defmt::debug!("\tmagnitudes: {}", mag);
 
         Detected {
             phase: self.resonators[max_norm_index].polar_value.angle,

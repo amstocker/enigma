@@ -8,7 +8,7 @@ use stm32h7xx_hal::adc::{Adc, Enabled};
 use stm32h7xx_hal::pac::{ADC1, ADC2};
 use nb::block;
 
-use crate::dsp::{Process, debounce::Median};
+use super::debounce::Median;
 
 
 const CV_LOW: f32 = 0.003;
@@ -60,15 +60,15 @@ impl Input {
         self.adc2.start_conversion(&mut self.cv2);
         let cv1_sample = scale(block!(self.adc1.read_sample()).unwrap_or_default(), self.adc1.slope());
         let cv2_sample = scale(block!(self.adc2.read_sample()).unwrap_or_default(), self.adc2.slope());
-        samples.cv1 = self.filters[0].process(cv1_sample);
-        samples.cv2 = self.filters[1].process(cv2_sample);
+        samples.cv1 = self.filters[0].insert(cv1_sample);
+        samples.cv2 = self.filters[1].insert(cv2_sample);
 
         self.adc1.start_conversion(&mut self.cv3);
         self.adc2.start_conversion(&mut self.cv4);
         let cv3_sample = scale(block!(self.adc1.read_sample()).unwrap_or_default(), self.adc1.slope());
         let cv4_sample = scale(block!(self.adc2.read_sample()).unwrap_or_default(), self.adc2.slope());
-        samples.cv3 = self.filters[2].process(cv3_sample);
-        samples.cv4 = self.filters[3].process(cv4_sample);
+        samples.cv3 = self.filters[2].insert(cv3_sample);
+        samples.cv4 = self.filters[3].insert(cv4_sample);
 
         samples        
     }
