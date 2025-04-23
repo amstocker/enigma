@@ -6,7 +6,9 @@ edition = "2024"
 [dependencies]
 micromath = "2.1.0"
 num-complex = "0.4.6"
+# dsp-test = { version = "0.1.2", git = "https://github.com/amstocker/DSPTest.git", optional = true }
+dsp-test = { path = "../../DSPTest", optional = true }
 
-
-[dev-dependencies]
-dsp-test = { git = "https://github.com/amstocker/DSPTest.git" }
+[[bin]]
+name = "test"
+required-features = [ "dsp-test" ]

@@ -24,15 +24,3 @@ impl<A: Process, B: Process> Process for Chain<A, B> {
 }
 
 
-#[cfg(test)]
-mod tests {
-    extern crate std;
-
-    use dsp_test::Module;
-
-    #[test]
-    fn test_std() {
-        std::println!("hello");
-    }
-
-}
